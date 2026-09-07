@@ -1,0 +1,19 @@
+# Iris is X frame
+FRAME_CLASS	1
+FRAME_TYPE	1
+# IRLOCK FEATURE
+RC8_OPTION 39
+PLND_ENABLED    1
+PLND_TYPE       3
+# SONAR FOR IRLOCK
+SIM_SONAR_SCALE 10
+RNGFND1_TYPE 1
+RNGFND1_SCALING 10
+RNGFND1_PIN 0
+RNGFND1_MAX_CM 5000
+# 关闭预解锁检查（SITL 油门 RC3 默认 1500 中位，会触发 "Throttle not neutral"，此处禁用全部预检）
+ARMING_CHECK 0
+# ===== DJI Matrice 高偏航惯量调参 (izz=0.1394, 约 iris 的 8 倍) =====
+# copter.parm 默认 ATC_RAT_YAW_P=0.09 偏慢、D=0 无阻尼 → 偏航"慢 + 超调 + 震荡"
+ATC_RAT_YAW_P 0.20
+ATC_RAT_YAW_D 0.005

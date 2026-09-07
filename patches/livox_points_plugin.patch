@@ -1,0 +1,43 @@
+diff --git a/src/livox_points_plugin.cpp b/src/livox_points_plugin.cpp
+index a222ff9..e6ada01 100644
+--- a/src/livox_points_plugin.cpp
++++ b/src/livox_points_plugin.cpp
+@@ -72,7 +72,7 @@ void LivoxPointsPlugin::Load(gazebo::sensors::SensorPtr _parent, sdf::ElementPtr
+     char **argv = nullptr;
+     auto curr_scan_topic = sdf->Get<std::string>("ros_topic");
+     ROS_INFO_STREAM("ros topic name:" << curr_scan_topic);
+-    ros::init(argc, argv, curr_scan_topic);
++    ros::init(argc, argv, "livox_lidar_node");  // 节点名不能带前导 /，话题名仍用 curr_scan_topic
+     rosNode.reset(new ros::NodeHandle);
+     rosPointPub = rosNode->advertise<livox_ros_driver2::CustomMsg>(curr_scan_topic, 5);
+ 
+@@ -154,7 +154,9 @@ void LivoxPointsPlugin::OnNewLaserScans() {
+         auto verticle_incre = VerticalAngleResolution();
+ 
+ 
+-        for (auto &pair : points_pair) {
++        for (std::size_t sample_index = 0;
++             sample_index < points_pair.size(); ++sample_index) {
++            auto &pair = points_pair[sample_index];
+             auto range = rayShape->GetRange(pair.first);
+             auto intensity = rayShape->GetRetro(pair.first);
+                 // 过滤无效点
+@@ -183,9 +185,10 @@ void LivoxPointsPlugin::OnNewLaserScans() {
+             pt.tag = 0; // 0x10 表示正常返回点，具体参考Livox协议
+             pt.line = pair.second.line; // 仿真中通常难以模拟准确的线号，设为0或根据 zenith 计算
+             
+-            // 设置点的时间偏移，rotate_info.time 是 CSV 中的时间（秒），CustomMsg 需要纳秒
+-            // 注意：timebase + offset_time = 该点的绝对时间
+-            pt.offset_time = ros::Time::now().toNSec() - msg.timebase; 
++            // Gazebo evaluates every ray from the same physics snapshot. These
++            // points are already motion-distortion-free, so they must share one
++            // acquisition time. CPU loop duration is not sensor time.
++            pt.offset_time = 0;
+ 
+             msg.points.push_back(pt);
+         }
+@@ -371,4 +374,3 @@ void LivoxPointsPlugin::SendRosTf(const ignition::math::Pose3d &pose, const std:
+ }
+ 
+ }
+-

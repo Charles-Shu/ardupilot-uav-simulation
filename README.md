@@ -40,10 +40,12 @@ git submodule update --init --recursive
 
 # 2) ardupilot_gazebo 插件
 cd ~
-git clone https://github.com/ArduPilot/ardupilot_gazebo.git
+git clone https://github.com/ArduPilot/ardupilot_gazebo.git -b gazebo11
 cd ardupilot_gazebo
 mkdir -p build && cd build
 cmake .. && make -j4
+# 验证编译成功（能列出文件才算成功）：
+ls ~/ardupilot_gazebo/build/libArduPilotPlugin.so
 ```
 
 > 注意：校园网如果 git/pip 报 SSL 证书错误（MITM 劫持），先 `git config --global http.sslVerify false`。

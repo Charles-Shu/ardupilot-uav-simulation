@@ -25,7 +25,7 @@ PX4 和 APM 在 Gazebo 里用的是**完全不同的两套插件**：
 ## 2. 环境搭建（隔离式，不碰 PX4）
 
 1. 克隆 ArduPilot，切到 Copter-4.2.1 分支。
-2. 克隆 ardupilot_gazebo 插件仓库，`cmake && make` 编译出 `libArduPilotPlugin.so` / `libLiftDragPlugin.so`。
+2. 克隆 ardupilot_gazebo 插件仓库（**务必用 `gazebo11` 分支**——官方 `main` 分支已切到新版 Gazebo，会报 `gz-cmake3` 找不到），`cmake && make` 编译出 `libArduPilotPlugin.so`。
 3. 写一个 `ardupilot_env.sh`，**只在跑 APM 的终端里 source**，别写进 `.bashrc`：
 
 ```bash

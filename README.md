@@ -86,7 +86,7 @@ cd ~
 ./apm_sitl_matrice.sh sonoma_raceway_apm.world   # sonoma 赛道场景
 ```
 
-脚本用 tmux 起 4 个窗口：roscore → gazebo → SITL+mavproxy → MAVROS。
+脚本会打开 4 个独立终端：roscore / gazebo / SITL / MAVROS（SITL 终端会再弹出 console + map 两个窗口）。
 
 启动后：
 1. 等 20~30 秒，SITL 窗口出现 `GPS 1: detected`。
@@ -95,7 +95,7 @@ cd ~
    arm throttle
    takeoff 5
    ```
-3. 退出：tmux 里 `Ctrl-b` 再 `d`，然后 `tmux kill-session -t apm-matrice`。
+3. 停止：`bash ~/apm_cleanup.sh`（或直接关闭各终端窗口）。
 
 ---
 

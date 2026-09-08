@@ -17,11 +17,21 @@
 | ArduPilot | Copter-4.2.1 分支 |
 | ardupilot_gazebo | APM 的 Gazebo 插件（`libArduPilotPlugin.so`、`libLiftDragPlugin.so`） |
 
-> ⚠️ **前置修复（必做）**：Livox Mid-360 插件有个 bug —— `livox_points_plugin.cpp` 里 `ros::init` 把带前导 `/` 的话题名当成了节点名，导致 gazebo 一加载就崩。给 `Mid360_imu_sim` 包打上本仓库的补丁：
+> ⚠️ **前置修复（必做）**：Livox Mid-360 插件有个 bug —— `livox_points_plugin.cpp` 里 `ros::init` 把带前导 `/` 的话题名当成了节点名，导致 gazebo 一加载就崩。
 >
+> **方法一（打补丁）**：
 > ```bash
 > cd ~/catkin_ws/src/Mid360_imu_sim
 > git apply <本仓库根目录>/patches/livox_points_plugin.patch
+> ```
+>
+> **方法二（手动改，补丁因版本差异打不上时用）**：打开 `src/livox_points_plugin.cpp`，把这一行
+> ```cpp
+> ros::init(argc, argv, curr_scan_topic);
+> ```
+> 改成
+> ```cpp
+> ros::init(argc, argv, "livox_lidar_node");
 > ```
 >
 > 然后重新编译 `Mid360_imu_sim`，把生成的 `.so` 放到 gazebo 的 `GAZEBO_PLUGIN_PATH` 里。（详细原理见经验文档 §3.5）

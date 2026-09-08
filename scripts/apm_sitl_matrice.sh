@@ -18,6 +18,10 @@
 SESSION="apm-matrice"
 WORLD="${1:-empty_apm.world}"  # 默认平地；命令行传入世界名即可切换场景
 FRAME="gazebo-iris"           # 四旋翼 X 构型
+# 若系统装了 conda 且 base 环境自动激活（如同学配了 CUDA/conda），tmux 每开一个窗格都会重新
+# source .bashrc 把 base 激活回来，conda 的 Python 会顶掉系统 Python，导致 ROS/mavproxy 拉不起来。
+# 所以每个窗格的命令开头都先退出 base（没装 conda 的机器上也不报错）。
+DECONDA='conda deactivate 2>/dev/null || true; '
 
 # 清理同名 session
 tmux kill-session -t "$SESSION" 2>/dev/null
@@ -29,24 +33,24 @@ sleep 1
 
 # 1) roscore（传感器插件 D435i/Mid360 需要，先起）
 tmux new-session -d -s "$SESSION" -n roscore
-tmux send-keys -t "$SESSION" "source /opt/ros/noetic/setup.bash && roscore" C-m
+tmux send-keys -t "$SESSION" "$DECONDA source /opt/ros/noetic/setup.bash && roscore" C-m
 sleep 5
 
 # 2) gazebo
 tmux split-window -h -t "$SESSION"
 tmux send-keys -t "$SESSION" \
-  "source /opt/ros/noetic/setup.bash && source ~/ardupilot_env.sh && gazebo --verbose ~/ardupilot_gazebo/worlds/$WORLD" C-m
+  "$DECONDA source /opt/ros/noetic/setup.bash && source ~/ardupilot_env.sh && gazebo --verbose ~/ardupilot_gazebo/worlds/$WORLD" C-m
 sleep 3
 
 # 3) SITL + mavproxy
 tmux split-window -v -t "$SESSION"
 tmux send-keys -t "$SESSION" \
-  "source ~/ardupilot_env.sh && cd ~/ardupilot && export SITL_RITW_TERMINAL='bash -c' && sim_vehicle.py -v ArduCopter -f $FRAME --console --map" C-m
+  "$DECONDA source ~/ardupilot_env.sh && cd ~/ardupilot && export SITL_RITW_TERMINAL='bash -c' && sim_vehicle.py -v ArduCopter -f $FRAME --console --map" C-m
 
 # 4) MAVROS
 tmux split-window -h -t "$SESSION"
 tmux send-keys -t "$SESSION" \
-  "source /opt/ros/noetic/setup.bash && roslaunch mavros apm.launch fcu_url:=udp://127.0.0.1:14551@127.0.0.1:14555" C-m
+  "$DECONDA source /opt/ros/noetic/setup.bash && roslaunch mavros apm.launch fcu_url:=udp://127.0.0.1:14551@127.0.0.1:14555" C-m
 
 # 均匀布局
 tmux select-layout -t "$SESSION" tiled

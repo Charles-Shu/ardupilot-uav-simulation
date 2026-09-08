@@ -118,6 +118,7 @@ python3 ~/apm_plot_flight.py flight_v1.csv
 
 | 现象 | 解决 |
 |---|---|
+| 启动后 console/map 窗口没起来 | 系统装了 conda（base 自动激活）会顶掉系统 Python；脚本已自动 `conda deactivate`，无需手动处理 |
 | gazebo 起不来 / 重复 map 窗口 | 残留进程，跑 `bash ~/apm_cleanup.sh` |
 | `Throttle not neutral` 无法 arm | 确认 `gazebo-iris.parm` 里有 `ARMING_CHECK 0` |
 | 起飞自旋/翻滚 | 检查 LiftDrag 的 `forward`（CW/CCW 要相反，见经验文档 §3.6） |

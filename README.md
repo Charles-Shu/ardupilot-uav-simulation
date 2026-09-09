@@ -31,10 +31,18 @@
 > ```
 > 改成
 > ```cpp
-> ros::init(argc, argv, "livox_lidar_node");
+> if (!ros::isInitialized()) {
+>     ros::init(argc, argv, "livox_lidar_node");
+> }
 > ```
 >
 > 然后重新编译 `Mid360_imu_sim`，把生成的 `.so` 放到 gazebo 的 `GAZEBO_PLUGIN_PATH` 里。（详细原理见经验文档 §3.5）
+>
+> ⚠️ **前置修复 2（Livox CSV 路径）**：`Mid360_real.sdf` 里 Livox 雷达的 `csv_file_name` 写死了绝对路径（`/home/<用户名>/...`），换机器会找不到。改成 `model://` 相对路径：
+> ```bash
+> cd ~/PX4-Autopilot/Tools/sitl_gazebo/models/Mid360_real
+> sed -i 's|/home/[^/]*/catkin_ws/src/Mid360_imu_sim/scan_mode/mid360.csv|model://livox_mid40/scan_mode/mid360.csv|g' Mid360_real.sdf
+> ```
 
 ---
 

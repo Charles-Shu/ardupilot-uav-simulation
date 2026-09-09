@@ -1,11 +1,13 @@
 diff --git a/src/livox_points_plugin.cpp b/src/livox_points_plugin.cpp
 --- a/src/livox_points_plugin.cpp
 +++ b/src/livox_points_plugin.cpp
-@@ -72,7 +72,7 @@ void LivoxPointsPlugin::Load(gazebo::sensors::SensorPtr _parent, sdf::ElementPtr
+@@ -72,7 +72,9 @@ void LivoxPointsPlugin::Load(gazebo::sensors::SensorPtr _parent, sdf::ElementPtr
      char **argv = nullptr;
      auto curr_scan_topic = sdf->Get<std::string>("ros_topic");
      ROS_INFO_STREAM("ros topic name:" << curr_scan_topic);
 -    ros::init(argc, argv, curr_scan_topic);
-+    ros::init(argc, argv, "livox_lidar_node");  // 节点名不能带前导 /，话题名仍用 curr_scan_topic
++    if (!ros::isInitialized()) {
++        ros::init(argc, argv, "livox_lidar_node");  // 节点名不能带前导 /，话题名仍用 curr_scan_topic
++    }
      rosNode.reset(new ros::NodeHandle);
      rosPointPub = rosNode->advertise<livox_ros_driver2::CustomMsg>(curr_scan_topic, 5);

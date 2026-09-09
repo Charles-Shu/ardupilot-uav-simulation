@@ -1,6 +1,9 @@
 <?xml version="1.0" ?>
 <sdf version="1.5">
   <world name="default">
+    <plugin name='gazebo_ros_api_plugin' filename='libgazebo_ros_api_plugin.so'>
+      <robotNamespace></robotNamespace>
+    </plugin>
     <include><uri>model://sun</uri></include>
     <include><uri>model://ground_plane</uri></include>
     <include><uri>model://asphalt_plane</uri></include>

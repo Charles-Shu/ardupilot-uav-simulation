@@ -53,7 +53,7 @@ fi
 open_term "1-roscore" "source /opt/ros/noetic/setup.bash && roscore"
 sleep 5
 
-open_term "2-gazebo" "source /opt/ros/noetic/setup.bash && source ~/ardupilot_env.sh && gazebo --verbose ~/ardupilot_gazebo/worlds/$WORLD"
+open_term "2-gazebo" "source /opt/ros/noetic/setup.bash && source ~/ardupilot_env.sh && gazebo -s libgazebo_ros_api_plugin.so --verbose ~/ardupilot_gazebo/worlds/$WORLD"
 sleep 3
 
 # SITL：sim_vehicle.py 会再弹出 console + map 两个独立窗口（SITL_RITW_MINIMIZE=0 让它们不最小化）
